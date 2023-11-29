@@ -37,6 +37,26 @@ const AccountSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  winnings: {
+    type: Number,
+    default: 0
+  },
+  gamesPlayed: {
+    type: Number,
+    default: 0
+  },
+  gamesWon: {
+    type: Number,
+    default: 0
+  },
+  isPremium: {
+    type: Boolean,
+    default: false
+  },
+  isVisible: {
+    type: Boolean,
+    default: true
+  }
 });
 
 // Converts a doc to something we can store in redis later on.
