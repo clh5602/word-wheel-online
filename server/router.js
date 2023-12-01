@@ -18,6 +18,8 @@ const router = (app) => {
 
   app.get('/landing', mid.requiresLogin, controllers.Landing.landingPage);
 
+  app.get('/game', mid.requiresLogin, controllers.Game.gamePage);
+
   app.get('/getAccount', mid.requiresLogin, controllers.Account.basicInfo);
 
   //app.get('/maker', mid.requiresLogin, controllers.Domo.makerPage);

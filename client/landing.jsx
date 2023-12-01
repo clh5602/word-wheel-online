@@ -36,6 +36,63 @@ const visibilityButton = (e) => {
     });
 }
 
+const handlePassword = (e) => {
+    e.preventDefault();
+    helper.hideError();
+
+    const oldPass = e.target.querySelector('#oldPass').value;
+    const newPass = e.target.querySelector('#newPass').value;
+    const newPass2 = e.target.querySelector('#newPass2').value;
+
+    if (!oldPass || !newPass || !newPass2) {
+        helper.handleError('All fields are required!');
+        return false;
+    }
+
+    if (newPass !== newPass2) {
+        helper.handleError('New passwords do not match!');
+        return false;
+    }
+
+    helper.sendPost(e.target.action, {oldPass, newPass});
+
+    return false;
+}
+
+const PasswordWindow = (props) => {
+    return (
+        <form id="passwordForm"
+            name="passwordForm"
+            onSubmit={handlePassword}
+            action="/changePass"
+            method="POST"
+            className="passForm"
+        >
+            <label htmlFor='oldPass'>Old Password: </label>
+            <input id='oldPass' type='password' name='oldPass' placeholder='old password' />
+            <label htmlFor='newPass'>New Password: </label>
+            <input id='newPass' type='password' name='newPass' placeholder='new password' />
+            <label htmlFor='newPass2'>Confirm New Password: </label>
+            <input id='newPass2' type='password' name='newPass2' placeholder='retype new password' />
+            <input className='formSubmit' type='submit' value='Change Password' />
+        </form>
+    );
+};
+
+const changePasswordButton = (e) => {
+    ReactDOM.render(
+        <PasswordWindow />, document.getElementById('content')
+    );
+}
+
+const calculateWinRate = (played, won) => {
+    if (played <= 0) {
+        return 0;
+    } else {
+        return Math.round(100 * (won / played));
+    }
+}
+
 // shows when reaching the landing page
 const LandingOverview = (props) => {
     return (
@@ -44,7 +101,8 @@ const LandingOverview = (props) => {
             <img src="/assets/img/default-pfp.png" id="pfp"></img>
             <h2>{curAccount.username}</h2>
             <h3>{displayAccountType(curAccount.isPremium)}</h3>
-            <h2>${curAccount.winnings}</h2>
+            <h2>Score: {curAccount.winnings}</h2>
+            <a href='/game'><button>Start Game!</button></a>
         </div>
     );
 };
@@ -58,12 +116,17 @@ const Settings = (props) => {
             <h2>{curAccount.username}</h2>
             <h3>{displayAccountType(curAccount.isPremium)}</h3>
             <h3>{displayAccountVisibility(curAccount.isVisible)}</h3>
-            <h2>${curAccount.winnings}</h2>
+            <h2>Score: {curAccount.winnings}</h2>
+            <h2>Games Played: {curAccount.gamesPlayed}</h2>
+            <h2>Win Rate: {calculateWinRate(curAccount.gamesPlayed, curAccount.gamesWon)}%</h2>
 
             <button type="button" onClick={visibilityButton}>Toggle Account Visibility</button>
-        </div>
+            <button type="button">Purchase Premium</button>
+            <button type="button" onClick={changePasswordButton}>Change Password</button>
+            <a href="/logout"><button type="button">Logout</button></a>
+        </div >
     );
-};
+}; 
 
 // shows when viewing the leaderboard
 const Leaderboard = (props) => {

@@ -4,8 +4,8 @@ module.exports = {
     entry: {
         app: './client/maker.jsx',
         login: './client/login.jsx',
-        changePass: './client/changePass.jsx',
         landing: './client/landing.jsx',
+        game: './client/game.jsx',
     },
     module: {
         rules: [
