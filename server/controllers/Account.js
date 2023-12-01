@@ -80,6 +80,55 @@ const changePassword = async (req, res) => {
   });
 };
 
+const visibility = async (req, res) => {
+  try {
+    console.log("here")
+    const doc = await Account.findOne({ username: req.session.account.username }).exec();
+    if (!doc) {
+      throw new Error("account not found");
+    }
+    doc.isVisible = !doc.isVisible;
+    await doc.save();
+
+    const responseObj = {
+      username: doc.username,
+      winnings: doc.winnings,
+      gamesPlayed: doc.gamesPlayed,
+      gamesWon: doc.gamesWon,
+      isPremium: doc.isPremium,
+      isVisible: doc.isVisible
+    }
+
+    return res.status(201).json(responseObj);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: 'Error retrieving account!' });
+  }
+};
+
+const basicInfo = async (req, res) => {
+  try {
+    const doc = await Account.findOne({ username: req.session.account.username }).exec();
+    if (!doc) {
+      throw new Error("account not found");
+    }
+
+    const responseObj = {
+      username: doc.username,
+      winnings: doc.winnings,
+      gamesPlayed: doc.gamesPlayed,
+      gamesWon: doc.gamesWon,
+      isPremium: doc.isPremium,
+      isVisible: doc.isVisible
+    }
+
+    return res.json({ account: responseObj });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: 'Error retrieving account!' });
+  }
+};
+
 module.exports = {
   login,
   loginPage,
@@ -87,4 +136,6 @@ module.exports = {
   logout,
   changePasswordPage,
   changePassword,
+  basicInfo,
+  visibility
 };

@@ -287,3 +287,8 @@ h3.domoAge {
 .domo:last-child {
     margin-bottom:10px;
 }
+
+#pfp {
+    width: 200px;
+    height: 200px;
+}
