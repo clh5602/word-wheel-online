@@ -2,6 +2,8 @@ const helper = require('./helper.js');
 const React = require('react');
 const ReactDOM = require('react-dom');
 
+const socket = io();
+
 // shows when viewing the leaderboard
 const JoiningPage = (props) => {
     return (
