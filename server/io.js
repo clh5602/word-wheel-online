@@ -20,7 +20,7 @@ const socketSetup = (app) => {
         console.log('a user connected');
 
        // add user to a random room
-        socket.join('general');
+        socket.join(game.joinRoom());
 
         socket.on('disconnect', () => {
             console.log('a user disconnected');
@@ -35,6 +35,8 @@ const socketSetup = (app) => {
         socket.on('chat message', (msg) => handleChatMessage(socket, msg));
         socket.on('room change', (room) => handleRoomChange(socket, room));
     });
+
+    game.populateRooms;
 
     return server;
 };

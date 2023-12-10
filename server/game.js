@@ -2,12 +2,10 @@ import puzzles from './wwo-puzzles.json' assert { type: 'json' };
 const Room = require('./Room.js'); // Room class
 
 const rooms = {};
-const roomIDs = [];
-const NUM_ROOMS = 100;
-const ID_LENGTH = 4;
-const CHECK_INTERVAL = 1000;
+const ID_LENGTH = 8;
+const CHECK_INTERVAL = 10000;
 const puzzleCount = puzzles.length;
-let roomIndex = 0;
+let currentID = false;
 
 const CHAR_NUM_OFFSET = 48; // unicode '0'
 const CHAR_LETTER_OFFSET = 65; // unicode 'A'
@@ -16,43 +14,83 @@ const CHAR_LETTER_OFFSET = 65; // unicode 'A'
 // with values from 0-9 and A-Z
 // NOTE: ID is not guaranteed to be unique
 const generateID = () => {
-  let resultingID = '';
+    let resultingID = '';
 
-  for (let i = 0; i < ID_LENGTH; i++) {
-    let randomInt = Math.floor(Math.random() * 36);
-    let newChar = '';
+    for (let i = 0; i < ID_LENGTH; i++) {
+        let randomInt = Math.floor(Math.random() * 36);
+        let newChar = '';
 
-    if (randomInt < 10) {
-      newChar = String.fromCharCode(randomInt + CHAR_NUM_OFFSET);
-    } else {
-      randomInt -= 10;
-      newChar = String.fromCharCode(randomInt + CHAR_LETTER_OFFSET);
+        if (randomInt < 10) {
+            newChar = String.fromCharCode(randomInt + CHAR_NUM_OFFSET);
+        } else {
+            randomInt -= 10;
+            newChar = String.fromCharCode(randomInt + CHAR_LETTER_OFFSET);
+        }
+
+        resultingID += newChar;
     }
 
-    resultingID += newChar;
-  }
-
-  return resultingID;
+    return resultingID;
 };
 
-// fills the rooms obj with a bunch of unoccupied
-// rooms. The amount of rooms is based on "NUM_ROOMS"
-const populateRooms = () => {
-  let i = 0;
-  let newID;
 
-  while (i < NUM_ROOMS) {
-    newID = generateID();
+const createRoom = () => {
 
-    if (!rooms[newID]) {
-      i++;
-      rooms[newID] = new Room.Room(newID);
-      roomIDs.push();
+    // generate IDs until a unique one is created
+    let newID = generateID();
+    while (!rooms[newID]) {
+        newID = generateID();
     }
-  }
+
+    // create a room for that ID
+    let newRoom = new Room.Room(newID);
+
+    // update in dictionary
+    rooms[newID] = newRoom;
+
+    currentID = newID;
 };
 
 const getRandomPuzzle = () => {
     return puzzles[Math.floor(Math.random() * puzzleCount)];
 }
 
+const joinRoom = () => {
+    // returns the room ID for an empty room, and starts it if full
+    if (!currentID) {
+        createRoom();
+    }
+
+    let roomID = currentID;
+
+    // add to room, check if full
+    if(rooms[currentID].incrementUserCount()){
+        // now room is full, begin game shortly and create new room
+        setTimeout(() => {
+            const puzzleObj = getRandomPuzzle();
+            rooms[roomID].initializePuzzle(puzzleObj.puzzle, puzzleObj.category);
+        }, 6000);
+
+        createRoom();
+    }
+
+    return roomID;
+}
+
+// free rooms
+const clearEmptyRooms = () => {
+    // capture the keys
+    const roomIDs = rooms.keys();
+
+    roomIDs.forEach((x) => {
+        if (rooms[x].delete) {
+            delete rooms[x];
+        }
+    });
+}
+setInterval(clearEmptyRooms, CHECK_INTERVAL)
+
+module.exports = {
+    joinRoom,
+    populateRooms
+}

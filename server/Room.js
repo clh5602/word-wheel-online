@@ -1,5 +1,6 @@
 const MAX_POINTS = 8000;
 const SECOND_DEDUCTION = 150;
+const ROOM_SIZE = 3;
 
 class Room {
     constructor(id) {
@@ -8,9 +9,10 @@ class Room {
         this.category = 'NA';
         this.revealed = [];
         this.puzzleLength = 0;
-        this.occupied = false;
+        this.delete = false;
         this.beingAnswered = false;
-        this.players = 0;
+        this.playerCount = 0;
+        this.playerUsernames = [];
         this.gameStart = new Date();
 
         // keeps track of how long the game was paused
@@ -18,6 +20,15 @@ class Room {
         // for them to type
         this.pauseBegin = new Date();
         this.pausedCount = 0;
+    }
+
+    incrementUserCount() {
+        this.playerCount++;
+        return (this.playerCount >= ROOM_SIZE);
+    }
+
+    addUsername(name) {
+        this.playerUsernames.push(name);
     }
 
     initializePuzzle(puzzle, category) {
@@ -35,8 +46,6 @@ class Room {
                 this.revealed[i] = '_';
             }
         }
-
-        this.occupied = false;
     }
 
     revealLetter() {
@@ -62,10 +71,7 @@ class Room {
     }
 
     freeRoom() {
-        this.beingAnswered = false;
-        this.occupied = false;
-        this.pausedCount = 0;
-        this.players = 0;
+        this.delete = true;
     }
 
     waitForAnswer() {
@@ -85,9 +91,12 @@ class Room {
         payout = Math.round(payout);
         payout = Math.min(1000, payout);
 
+        correctAns = this.puzzle.join().toUpperCase();
+
         response = {
-            correct: (this.puzzle.join().toUpperCase() === ansStr.toUpperCase()),
+            correct: (correctAns === ansStr.toUpperCase()),
             prize: payout,
+            puzzle: correctAns,
         }
 
         this.beingAnswered = false;
