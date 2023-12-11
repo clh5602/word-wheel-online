@@ -3,6 +3,7 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 
 const socket = io();
+
 let puzzleCategory = "";
 let currentRevealed = [];
 let myGuess = [];
@@ -60,7 +61,7 @@ const handleKeyPress = (e) => {
     // enter pressed, submit guess
     if (e.keyCode === 13) {
         const response = {
-            answer: myGuess.join(),
+            answer: myGuess.join(''),
             username: curAccount.username
         }
         socket.emit('answerCheck', response);
@@ -91,7 +92,7 @@ const handleKeyPress = (e) => {
 
     // update everyone else
     if (updateFlag) {
-        socket.emit('userType', myGuess.join());
+        socket.emit('userType', myGuess.join(''));
     }
 }
 
@@ -105,7 +106,7 @@ const someoneTyping = (user) => {
         );
 
         // capture the current revealed letters
-        currentRevealed = document.getElementById('typingMessage').textContent.split("");
+        currentRevealed = document.getElementById('puzzle').textContent.split("");
         // copy over
         myGuess = currentRevealed.slice();
         // find the indices of all underscores
@@ -117,7 +118,7 @@ const someoneTyping = (user) => {
         }
 
         // add key event handler
-        document.getElementById('typingMessage').addEventListener('keydown', handleKeyPress);
+        document.addEventListener('keydown', handleKeyPress);
     }
     else {
         // wait for someone to stop typing
@@ -188,6 +189,7 @@ const renderGamePage = (puzzObj) => {
 }
 
 const resumeGame = (resObj) => {
+    document.removeEventListener('keydown', handleKeyPress);
     // render the puzzle again
     ReactDOM.render(
         <GamePage puzzle={resObj.revealed} />,
@@ -222,15 +224,22 @@ const gotoResults = (obj) => {
     } else {
         // go to winner's page
         ReactDOM.render(
-            <Winner puzzle={obj.solution} winner={obj.winner} prize={obj.prize}/>,
+            <Winner puzzle={obj.solution} winner={obj.winner} prize={obj.prize} />,
             document.getElementById('content')
         );
 
         // save winnings
         if (curAccount.username === obj.winner) {
-            helper.sendPost("/addWinnings", {winnings: obj.prize});
+            helper.sendPost("/addWinnings", { winnings: obj.prize });
         }
     }
+}
+
+const updatePuzzle = (puzzle) => {
+    ReactDOM.render(
+        <GamePage puzzle={puzzle} />,
+        document.getElementById('content')
+    );
 }
 
 const init = async () => {
@@ -252,26 +261,19 @@ const init = async () => {
     socket.on('beginTyping', someoneTyping);
 
     // when a new letter is revealed
-    socket.on('gameUpdate', (puzzle) => {
-        ReactDOM.render(
-            <GamePage puzzle={puzzle} />,
-            document.getElementById('content')
-        );
-    });
+    socket.on('gameUpdate', updatePuzzle);
 
     // when someone is typing their answer
-    socket.on('userTyped', (puzzle) => {
-        ReactDOM.render(
-            <GamePage puzzle={puzzle} />,
-            document.getElementById('content')
-        );
-    });
+    socket.on('userTyped', updatePuzzle);
 
     // someone inputted an incorrect guess
     socket.on('gameResume', resumeGame);
 
     // someone inputted a correct guess
     socket.on('gameSolved', gotoResults);
+
+    // now that it's set up, try to join room
+    socket.emit('joinRoom');
 }
 
 window.onload = init;

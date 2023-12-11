@@ -92,7 +92,6 @@ const addWinnings = async (req, res) => {
 
 const visibility = async (req, res) => {
   try {
-    console.log("here")
     const doc = await Account.findOne({ username: req.session.account.username }).exec();
     if (!doc) {
       throw new Error("account not found");

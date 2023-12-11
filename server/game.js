@@ -1,44 +1,22 @@
-import puzzles from './wwo-puzzles.json' assert { type: 'json' };
+const puzzles = require('./wwo-puzzles.json');
 const Room = require('./Room.js'); // Room class
 
 const rooms = {};
-const ID_LENGTH = 8;
+const ID_MAX = 10000;
 const CHECK_INTERVAL = 10000;
-const puzzleCount = puzzles.length;
+let puzzleCount = puzzles.length;
 let currentID = false;
 
-const CHAR_NUM_OFFSET = 48; // unicode '0'
-const CHAR_LETTER_OFFSET = 65; // unicode 'A'
-
-// creates a random ID consisting of four digits,
-// with values from 0-9 and A-Z
 // NOTE: ID is not guaranteed to be unique
 const generateID = () => {
-    let resultingID = '';
-
-    for (let i = 0; i < ID_LENGTH; i++) {
-        let randomInt = Math.floor(Math.random() * 36);
-        let newChar = '';
-
-        if (randomInt < 10) {
-            newChar = String.fromCharCode(randomInt + CHAR_NUM_OFFSET);
-        } else {
-            randomInt -= 10;
-            newChar = String.fromCharCode(randomInt + CHAR_LETTER_OFFSET);
-        }
-
-        resultingID += newChar;
-    }
-
-    return resultingID;
+    return Math.floor(Math.random() * ID_MAX);
 };
-
 
 const createRoom = () => {
 
     // generate IDs until a unique one is created
     let newID = generateID();
-    while (!rooms[newID]) {
+    while (rooms[newID]) {
         newID = generateID();
     }
 
@@ -105,7 +83,7 @@ const joinRoom = () => {
     let startGame = false;
 
     // add to room, check if full
-    if(rooms[roomID].incrementUserCount()){
+    if (rooms[roomID].incrementUserCount()) {
         // now room is full, begin game shortly and create new room
         const puzzleObj = getRandomPuzzle();
         startGame = rooms[roomID].initializePuzzle(puzzleObj.puzzle, puzzleObj.category);
@@ -114,13 +92,13 @@ const joinRoom = () => {
 
     const playerCount = rooms[roomID].playerCount;
 
-    return {roomID, startGame, playerCount};
+    return { roomID, startGame, playerCount };
 };
 
 // reveals
 const updateRooms = () => {
     // capture the keys
-    const roomIDs = rooms.keys();
+    const roomIDs = Object.keys(rooms);
     const roomArr = [];
 
     roomIDs.forEach((roomID) => {
@@ -146,7 +124,7 @@ const updateRooms = () => {
 // free rooms
 const clearEmptyRooms = () => {
     // capture the keys
-    const roomIDs = rooms.keys();
+    const roomIDs = Object.keys(rooms);
 
     roomIDs.forEach((x) => {
         if (rooms[x].delete) {
@@ -159,7 +137,6 @@ setInterval(clearEmptyRooms, CHECK_INTERVAL);
 
 module.exports = {
     joinRoom,
-    populateRooms,
     tryRoomBeginAnswer,
     checkPuzzleAnswer,
     updateRooms

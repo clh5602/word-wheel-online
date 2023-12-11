@@ -13,7 +13,7 @@ class Room {
         this.beingAnswered = false;
         this.playerCount = 0;
         this.playerUsernames = [];
-        this.gameStart;
+        this.gameStart = false;
         this.allRevealed = false;
 
         // keeps track of how long the game was paused
@@ -58,7 +58,7 @@ class Room {
         }
 
         return {
-            puzzle: this.revealed.join(),
+            puzzle: this.revealed.join(''),
             category: this.category
         };
     }
@@ -68,14 +68,14 @@ class Room {
         if (!this.revealed.some((x) => x === '_')) {
             // no more empty spaces, puzzle is over!
             this.allRevealed = true;
-            return this.revealed.join();
+            return this.revealed.join('');
         }
         if (!this.beingAnswered) {
             // reveal a random letter
 
             // choose a random index
             let randInd = Math.floor(Math.random() * this.puzzleLength);
-            while (this.revealed[randInd] != '_') {
+            while (this.revealed[randInd] !== '_') {
                 randInd = Math.floor(Math.random() * this.puzzleLength);
             }
 
@@ -84,7 +84,7 @@ class Room {
         }
 
         // just return the puzzle string
-        return this.revealed.join();
+        return this.revealed.join('');
     }
 
     freeRoom() {
@@ -100,21 +100,22 @@ class Room {
     checkAnswer(ansStr) {
 
         // add to paused time
-        this.pausedCount = Math.abs(this.pausedCount.getTime() - new Date().getTime());
-
-        let payout = Math.abs(new Date().getTime() - this.pausedCount); // subtract paused time from current
+        this.pausedCount = Math.abs(this.pauseBegin.getTime() - new Date().getTime());
+        
+        // subtract paused time from current
+        let payout = Math.abs(new Date().getTime() - this.pausedCount); 
         payout = Math.abs(this.gameStart.getTime() - payout); // millis between game start and now
         payout = MAX_POINTS - Math.floor(payout / 1000) * SECOND_DEDUCTION; // point reward
         payout = Math.round(payout);
         payout = Math.min(1000, payout);
 
-        correctAns = this.puzzle.join().toUpperCase();
+        const correctAns = this.puzzle.join("").toUpperCase();
 
-        response = {
+        const response = {
             correct: (correctAns === ansStr.toUpperCase()),
             prize: payout,
             puzzle: correctAns,
-            revealed: this.revealed.join()
+            revealed: this.revealed.join('')
         }
 
         this.beingAnswered = false;
