@@ -4,16 +4,20 @@ const ReactDOM = require('react-dom');
 
 const socket = io();
 
-// shows when viewing the leaderboard
+
 const JoiningPage = (props) => {
+    if (!props.playerCount) {
+        return (
+            <div class="joining">
+                <h1>Joining Game...</h1>
+            </div>
+        );
+    }
+
     return (
-        <div class="settings">
+        <div class="joining">
             <h1>Joining Game...</h1>
-            <h2>Party: 1/3</h2>
-            <p>This game is not yet complete. Basically, it will use Socket.IO to play Wheel-Of-Fortune style
-                toss-up puzzles with a room of 3 people. Whoever buzzes in with the correct answer will receive
-                points based on how quickly they buzzed in, and these points will be saved to their account.
-            </p>
+            <h2>Party: {props.playerCount}/3</h2>
         </div>
     );
 };

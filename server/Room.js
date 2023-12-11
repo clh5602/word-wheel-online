@@ -13,7 +13,7 @@ class Room {
         this.beingAnswered = false;
         this.playerCount = 0;
         this.playerUsernames = [];
-        this.gameStart = new Date();
+        this.gameStart;
 
         // keeps track of how long the game was paused
         // does not penalize players for how long it takes
@@ -40,12 +40,26 @@ class Room {
         this.revealed = [];
         this.puzzleLength = puzzle.length;
         for (let i = 0; i < this.puzzleLength; i++) {
+            // filter special characters like space, punctuations, etc
             if (this.puzzle[i] === ' ') {
                 this.revealed[i] = ' ';
+            } else if (this.puzzle[i] === '\'') {
+                this.revealed[i] = '\'';
+            } else if (this.puzzle[i] === '&') {
+                this.revealed[i] = '&';
+            } else if (this.puzzle[i] === '!') {
+                this.revealed[i] = '!';
+            } else if (this.puzzle[i] === '?') {
+                this.revealed[i] = '?';
             } else {
                 this.revealed[i] = '_';
             }
         }
+
+        return {
+            puzzle: this.revealed.join(),
+            category: this.category
+        };
     }
 
     revealLetter() {
@@ -61,9 +75,6 @@ class Room {
 
             // copy over from complete puzzle
             this.revealed[randInd] = this.puzzle[randInd];
-
-            // return new phrase
-            return this.revealed.join();
         }
 
         // just return the puzzle string

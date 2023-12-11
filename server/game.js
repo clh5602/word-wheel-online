@@ -53,6 +53,46 @@ const createRoom = () => {
 
 const getRandomPuzzle = () => {
     return puzzles[Math.floor(Math.random() * puzzleCount)];
+};
+
+const tryRoomBeginAnswer = (roomID) => {
+    const goalRoom = rooms[roomID];
+
+    if (!goalRoom) {
+        // room DNE
+        return false;
+    }
+
+    if (goalRoom.beingAnswered) {
+        // room has already been paused
+        return false;
+    }
+
+    goalRoom.waitForAnswer();
+
+    return true;
+};
+
+// this function checks to see if the provided answer is
+// correct
+const checkPuzzleAnswer = (roomID, answer) => {
+    const goalRoom = rooms[roomID];
+    if (!goalRoom) {
+        // room DNE, return false
+        return false;
+    }
+
+    // return an object that contains data
+    // about the guess
+
+    const resObj = goalRoom.checkAnswer(answer);
+
+    // if this answer was correct, can destroy room
+    if (resObj.correct) {
+        goalRoom.freeRoom();
+    }
+
+    return resObj;
 }
 
 const joinRoom = () => {
@@ -62,19 +102,38 @@ const joinRoom = () => {
     }
 
     let roomID = currentID;
+    let startGame = false;
 
     // add to room, check if full
-    if(rooms[currentID].incrementUserCount()){
+    if(rooms[roomID].incrementUserCount()){
         // now room is full, begin game shortly and create new room
-        setTimeout(() => {
-            const puzzleObj = getRandomPuzzle();
-            rooms[roomID].initializePuzzle(puzzleObj.puzzle, puzzleObj.category);
-        }, 6000);
-
+        const puzzleObj = getRandomPuzzle();
+        startGame = rooms[roomID].initializePuzzle(puzzleObj.puzzle, puzzleObj.category);
         createRoom();
     }
 
-    return roomID;
+    const playerCount = rooms[roomID].playerCount;
+
+    return {roomID, startGame, playerCount};
+};
+
+// reveals
+const updateRooms = () => {
+    // capture the keys
+    const roomIDs = rooms.keys();
+    const roomArr = [];
+
+    roomIDs.forEach((roomID) => {
+        const current = rooms[roomID];
+        if (current.gameStart && !current.beingAnswered) {
+            roomArr.push({
+                roomID,
+                puzzle: current.revealLetter()
+            });
+        }
+    });
+
+    return roomArr;
 }
 
 // free rooms
@@ -87,10 +146,14 @@ const clearEmptyRooms = () => {
             delete rooms[x];
         }
     });
-}
-setInterval(clearEmptyRooms, CHECK_INTERVAL)
+};
+
+setInterval(clearEmptyRooms, CHECK_INTERVAL);
 
 module.exports = {
     joinRoom,
-    populateRooms
+    populateRooms,
+    tryRoomBeginAnswer,
+    checkPuzzleAnswer,
+    updateRooms
 }
