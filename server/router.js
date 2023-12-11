@@ -2,7 +2,6 @@ const controllers = require('./controllers');
 const mid = require('./middleware');
 
 const router = (app) => {
-  //app.get('/getDomos', mid.requiresLogin, controllers.Domo.getDomos);
 
   app.get('/changePass', mid.requiresLogin, controllers.Account.changePasswordPage);
   app.post('/changePass', mid.requiresLogin, controllers.Account.changePassword);
@@ -23,9 +22,6 @@ const router = (app) => {
   app.get('/game', mid.requiresLogin, controllers.Game.gamePage);
 
   app.get('/getAccount', mid.requiresLogin, controllers.Account.basicInfo);
-
-  //app.get('/maker', mid.requiresLogin, controllers.Domo.makerPage);
-  //app.post('/maker', mid.requiresLogin, controllers.Domo.makeDomo);
 
   app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
 };

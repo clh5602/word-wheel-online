@@ -1,28 +1,30 @@
 <html lang="en">
+
 <head>
-  <meta charset="utf-8"/>
+  <meta charset="utf-8" />
   <title>Word Wheel Online</title>
-  <link rel="shortcut icon" href="/assets/img/favicon.png"/>
-  <link rel="stylesheet" type="text/css" href="/assets/style.css"/>
+  <link rel="shortcut icon" href="/assets/img/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Titillium+Web:ital,wght@0,400;1,700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="/assets/style.css" />
 </head>
-<body> 
-  <nav><a href="/landing"><img id="logo" src="/assets/img/face.png" alt="face logo"/></a>
-  <div class="navlink"><a href="/landing">Quit Game</a></div>
+
+<body>
+  <nav><a href="/landing"><img id="logo" src="/assets/img/text-logo.png" alt="face logo" /></a>
+    <div class="navlink"><a href="/landing">Quit Game</a></div>
   </nav>
-  
+
   <section id="content">
 
   </section>
   <section id="playerInput">
-    
-  </section>
 
-  <div id="domoMessage" class='hidden'>
-    <img id="speech" src="/assets/img/speech.png" alt="speech box"/>
-    <h3><span id="errorMessage"></span></h3>
-    <img id="domo" src="assets/img/domo.png" alt="domo"/>
-  </div>
+  </section>
   <script src="/socket.io/socket.io.js"></script>
   <script src="/assets/gameBundle.js"></script>
 </body>
+
 </html>

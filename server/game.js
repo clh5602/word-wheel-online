@@ -102,7 +102,10 @@ const updateRooms = () => {
     const roomArr = [];
 
     roomIDs.forEach((roomID) => {
+
         const current = rooms[roomID];
+        if (current.delete) return;
+
         if (current.allRevealed) {
             // puzzle has failed, all letters shown
             roomArr.push({

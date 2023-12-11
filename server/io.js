@@ -103,6 +103,6 @@ const respondToAllRooms = () => {
     });
 };
 
-setInterval(respondToAllRooms, 1500);
+setInterval(respondToAllRooms, 1200);
 
 module.exports = socketSetup;
