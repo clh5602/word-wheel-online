@@ -4,7 +4,7 @@ const game = require('./game.js');
 
 let io;
 
-const answerEntryBegin = (socket) => {
+const answerEntryBegin = (socket, username) => {
     // should only have two rooms, the game room and a room with only the socket
     socket.rooms.forEach(room => {
         if(room == socket.id) return; // ignore its private room
@@ -14,7 +14,7 @@ const answerEntryBegin = (socket) => {
             // to wait for an answer, if it exists
 
             // now, tell the clients to wait
-            io.to(room).emit('beginTyping', socket.id);
+            io.to(room).emit('beginTyping', username);
         }
         
     });
@@ -38,7 +38,10 @@ const checkAnswer = (socket, answer, username) => {
                 });
             } else {
                 // answer was not correct, continue game
-                io.to(room).emit('gameResume', socket.id);
+                io.to(room).emit('gameResume', {
+                    loser: username,
+                    revealed: resObj.revealed
+                });
             }
         }
         // fall through - if no resObj, then the room DNE
@@ -76,7 +79,7 @@ const socketSetup = (app) => {
            new user connects. It is easier and far safer to simply pass
            it down into our handler functions in this way.
         */
-        socket.on('answerBegin', () => answerEntryBegin(socket));
+        socket.on('answerBegin', (username) => answerEntryBegin(socket, username));
         socket.on('answerCheck', (ansObj) => checkAnswer(socket, ansObj.answer, ansObj.username));
         socket.on('userType', (msg) => displayGuess(socket, msg));
 
@@ -95,7 +98,16 @@ const respondToAllRooms = () => {
     const updates = game.updateRooms();
 
     updates.forEach((obj) => {
-        io.to(obj.roomID).emit("gameUpdate", obj.puzzle);
+        if (obj.fail) {
+            // puzzle time up
+            io.to(obj.roomID).emit("gameSolved", {
+                solution: obj.puzzle,
+            });
+        } else {
+            // puzzle revealed new letter
+            io.to(obj.roomID).emit("gameUpdate", obj.puzzle);
+        }
+        
     });
 };
 

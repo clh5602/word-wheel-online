@@ -39,8 +39,15 @@ const hideError = () => {
     document.getElementById('domoMessage').classList.add('hidden');
 };
 
+const getAccountInfo = async () => {
+    const response = await fetch('/getAccount');
+    const data = await response.json();
+    return data.account;
+}
+
 module.exports = {
     handleError,
     sendPost,
     hideError,
+    getAccountInfo
 };

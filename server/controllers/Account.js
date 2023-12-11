@@ -80,6 +80,16 @@ const changePassword = async (req, res) => {
   });
 };
 
+const addWinnings = async (req, res) => {
+  const winnings = `${req.body.winnings}`;
+
+  const doc = await Account.findOne({ username: req.session.account.username }).exec();
+  doc.winnings += winnings;
+  await doc.save();
+
+  return res.status(201).json({ error: 'Winnings updated successfully!' });
+};
+
 const visibility = async (req, res) => {
   try {
     console.log("here")
@@ -137,5 +147,6 @@ module.exports = {
   changePasswordPage,
   changePassword,
   basicInfo,
-  visibility
+  visibility,
+  addWinnings
 };

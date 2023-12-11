@@ -14,6 +14,7 @@ class Room {
         this.playerCount = 0;
         this.playerUsernames = [];
         this.gameStart;
+        this.allRevealed = false;
 
         // keeps track of how long the game was paused
         // does not penalize players for how long it takes
@@ -64,7 +65,12 @@ class Room {
 
     revealLetter() {
         // check if there are empty spaces and should update
-        if (!this.beingAnswered && this.revealed.some((x) => x === '_')) {
+        if (!this.revealed.some((x) => x === '_')) {
+            // no more empty spaces, puzzle is over!
+            this.allRevealed = true;
+            return this.revealed.join();
+        }
+        if (!this.beingAnswered) {
             // reveal a random letter
 
             // choose a random index
@@ -108,6 +114,7 @@ class Room {
             correct: (correctAns === ansStr.toUpperCase()),
             prize: payout,
             puzzle: correctAns,
+            revealed: this.revealed.join()
         }
 
         this.beingAnswered = false;

@@ -4,12 +4,6 @@ const ReactDOM = require('react-dom');
 
 let curAccount;
 
-const getAccountInfo = async () => {
-    const response = await fetch('/getAccount');
-    const data = await response.json();
-    return data.account;
-}
-
 const displayAccountType = (type) => {
     if (type) {
         return "Premium Account";
@@ -150,7 +144,7 @@ const Leaderboard = (props) => {
 };
 
 const init = async () => {
-    curAccount = await getAccountInfo();
+    curAccount = await helper.getAccountInfo();
 
     document.getElementById("settings").onclick = () => {
         ReactDOM.render(

@@ -125,7 +125,14 @@ const updateRooms = () => {
 
     roomIDs.forEach((roomID) => {
         const current = rooms[roomID];
-        if (current.gameStart && !current.beingAnswered) {
+        if (current.allRevealed) {
+            // puzzle has failed, all letters shown
+            roomArr.push({
+                roomID,
+                puzzle: current.revealLetter(),
+                fail: true
+            });
+        } else if (current.gameStart && !current.beingAnswered) {
             roomArr.push({
                 roomID,
                 puzzle: current.revealLetter()
