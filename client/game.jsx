@@ -4,14 +4,15 @@ const ReactDOM = require('react-dom');
 
 const socket = io();
 
-let puzzleCategory = "";
-let currentRevealed = [];
-let myGuess = [];
-let underscoreIndices = [];
-let curIndex = -1;
+// global vars
+let puzzleCategory = ""; // category string
+let currentRevealed = []; // arr of revealed letters
+let myGuess = []; // arr for keyboard input
+let underscoreIndices = []; // indices for each empty spot in the puzzle
+let curIndex = -1; // used for keyboard input
 let curAccount;
 
-
+// html shown when waiting for others to join
 const JoiningPage = (props) => {
     if (!props.playerCount) {
         return (
@@ -29,6 +30,7 @@ const JoiningPage = (props) => {
     );
 };
 
+// renders the puzzle and category
 const GamePage = (props) => {
     return (
         <div class="game">
@@ -38,23 +40,28 @@ const GamePage = (props) => {
     );
 };
 
+// replaces the buzz button when someone else is typing
 const WhosTypingHTML = (props) => {
     return (
         <h2 id="typingMessage">{props.username} is typing their guess...</h2>
     );
 };
 
+// instructs the user how to enter their answer
 const ImTypingHTML = (props) => {
     return (
         <h2 id="typingMessage">Please type your answer with the keyboard. Press "ENTER" when finished.</h2>
     );
 };
 
+// notify the server that a user wishes to begin typing
 const beginTyping = (e) => {
     // tell everyone that they are typing
     socket.emit('answerBegin', curAccount.username);
 }
 
+// once someone buzzes in, read their keystrokes
+// this unfortunately means it's broken on mobile :(
 const handleKeyPress = (e) => {
     let updateFlag = false;
 
@@ -96,6 +103,7 @@ const handleKeyPress = (e) => {
     }
 }
 
+// get rid of the buzz in button, someone wishes to enter an answer
 const someoneTyping = (user) => {
     // check who is typing
     if (user === curAccount.username) {
@@ -129,18 +137,21 @@ const someoneTyping = (user) => {
     }
 }
 
+// butt lmao
 const BuzzInButton = (props) => {
     return (
         <button type="button" onClick={beginTyping}>Buzz In!</button>
     );
 };
 
+// can no longer buzz in, incorrect answer
 const LoseMessage = (props) => {
     return (
         <h2 id="typingMessage">Incorrect answer - unable to guess again!</h2>
     );
 };
 
+// results screen when no one guessed the answer in time
 const NoWinner = (props) => {
     return (
         <div class="results">
@@ -153,6 +164,7 @@ const NoWinner = (props) => {
     );
 };
 
+// results screen when someone wins
 const Winner = (props) => {
     return (
         <div class="results">
@@ -167,6 +179,7 @@ const Winner = (props) => {
     );
 };
 
+// when someone new joins the room, update the waiting page
 const updatePlayerCount = (count) => {
     ReactDOM.render(
         <JoiningPage playerCount={count} />,
@@ -174,6 +187,7 @@ const updatePlayerCount = (count) => {
     );
 };
 
+// gayum
 const renderGamePage = (puzzObj) => {
     // capture category
     puzzleCategory = puzzObj.category;
@@ -191,6 +205,7 @@ const renderGamePage = (puzzObj) => {
     );
 }
 
+// when someone enters an incorrect guess
 const resumeGame = (resObj) => {
     document.removeEventListener('keydown', handleKeyPress);
     // render the puzzle again
@@ -215,6 +230,7 @@ const resumeGame = (resObj) => {
     }
 }
 
+// send em to the results page
 const gotoResults = (obj) => {
     document.getElementById('playerInput').innerHTML = "";
 
@@ -238,6 +254,7 @@ const gotoResults = (obj) => {
     }
 }
 
+// a new letter is revealed
 const updatePuzzle = (puzzle) => {
     ReactDOM.render(
         <GamePage puzzle={puzzle} />,
@@ -275,7 +292,7 @@ const init = async () => {
     // someone inputted a correct guess
     socket.on('gameSolved', gotoResults);
 
-    // now that it's set up, try to join room
+    // now that the socket is set up, try to join room
     socket.emit('joinRoom');
 }
 

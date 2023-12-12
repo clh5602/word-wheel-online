@@ -5,6 +5,7 @@ const ReactDOM = require('react-dom');
 let curAccount;
 let topTen = [];
 
+// gets a string based on premium status
 const displayAccountType = (type) => {
     if (type) {
         return "Premium Account";
@@ -13,6 +14,7 @@ const displayAccountType = (type) => {
     }
 }
 
+// gets a string based on visibility status
 const displayAccountVisibility = (type) => {
     if (type) {
         return "This Account is Visible on the Leaderboard";
@@ -21,6 +23,7 @@ const displayAccountVisibility = (type) => {
     }
 }
 
+// toggles the visibility of this user
 const visibilityButton = (e) => {
     e.target.textContent = "Changing..."
     helper.sendPost("/visible", {}, (data) => {
@@ -33,9 +36,9 @@ const visibilityButton = (e) => {
     });
 }
 
+// passma
 const handlePassword = (e) => {
     e.preventDefault();
-    helper.hideError();
 
     const oldPass = e.target.querySelector('#oldPass').value;
     const newPass = e.target.querySelector('#newPass').value;
@@ -56,6 +59,7 @@ const handlePassword = (e) => {
     return false;
 }
 
+// html for change password form
 const PasswordWindow = (props) => {
     return (
         <form id="passwordForm"
@@ -77,6 +81,7 @@ const PasswordWindow = (props) => {
     );
 };
 
+// butt
 const changePasswordButton = (e) => {
     ReactDOM.render(
         <PasswordWindow />, document.getElementById('content')
@@ -169,7 +174,7 @@ const Leaderboard = (props) => {
     );
 };
 
-// load the leaderboard when the page is loaded
+// load the leaderboard when the page is initialized
 const loadLeaderboard = async () => {
     const response = await fetch('/topTen');
     topTen = await response.json();

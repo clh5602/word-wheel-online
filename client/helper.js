@@ -33,9 +33,7 @@ const sendPost = async (url, data, handler) => {
     }
 };
 
-const hideError = () => {
-};
-
+// gets a struct for the currently logged-in account
 const getAccountInfo = async () => {
     const response = await fetch('/getAccount');
     const data = await response.json();
@@ -45,6 +43,5 @@ const getAccountInfo = async () => {
 module.exports = {
     handleError,
     sendPost,
-    hideError,
     getAccountInfo
 };
