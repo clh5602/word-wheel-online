@@ -2,16 +2,17 @@ const controllers = require('./controllers');
 const mid = require('./middleware');
 
 const router = (app) => {
-
   app.get('/changePass', mid.requiresLogin, controllers.Account.changePasswordPage);
   app.post('/changePass', mid.requiresLogin, controllers.Account.changePassword);
 
   app.post('/addWinnings', mid.requiresLogin, controllers.Account.addWinnings);
 
+  app.get('/topTen', mid.requiresLogin, controllers.Account.topTen);
+
   app.get('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
   app.post('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.login);
 
-  app.post('/visible', mid.requiresSecure, mid.requiresLogout, controllers.Account.visibility);
+  app.post('/visible', mid.requiresSecure, mid.requiresLogin, controllers.Account.visibility);
 
   app.post('/signup', mid.requiresSecure, mid.requiresLogout, controllers.Account.signup);
 

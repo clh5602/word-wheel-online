@@ -10,14 +10,53 @@ body {
     background-image: linear-gradient(rgb(76, 64, 126), rgb(71, 46, 124));
 }
 
+input {
+    color: black;
+}
+
 * {
     font-family: 'Titillium Web', sans-serif;
     color: #DDD;
+    text-align: center;
 }
 
 #puzzle {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 3rem;
+    font-size: 3.5rem;
+    letter-spacing: .3rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#playerInput button, .results button {
+    background-color: #3b0d66;
+    width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+    border: none;
+    border-radius: 30px;
+    font-size: 2rem;
+    text-align: center;
+    margin: 20px auto;
+    transition: all 0.5s ease-out;
+    padding: 20px;
+}
+
+#playerInput button:hover, .results button:hover {
+    background-color: #6b379b;
+}
+#big-logo {
+    width: 350px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#logo-div {
+    margin-top: 100px;
+    width: 350px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #logo {
@@ -28,8 +67,8 @@ body {
     transition: all 0.5s ease-out;
 }
 
-#logo :hover{
-    transform: scale(1.2);
+#logo:hover{
+    transform: scale(1.05);
 }
 
 nav {
@@ -52,25 +91,39 @@ nav:nth-child(1) {
     float: left;
 }
 
+#switchToLogin, #switchToSignup {
+    background-color: #ffffff00;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    border: none;
+    font-size: 1rem;
+    text-align: center;
+    margin: 20px auto;
+}
+
+#switchToLogin:hover, #switchToSignup:hover {
+    text-decoration: underline;
+}
+
 .navlink a, .navlink a:link, .navlink a:visited, .navlink a:hover, .navlink a:active {
-    color: white;
     text-decoration: none;
     padding: 5px;
     border-radius: 4px;
-    background-color: #55acee;
+    background-color: #3b0d66;
     transition: background-color 0.4s ease;
 }
 
 .navlink a:hover {
     transition: background-color 0.8s ease;
-    background-color: #66bdff;
+    background-color: #4f2576;
 }
 
 .mainForm {
     height: 300px;
     width: 350px;
     margin: 0 auto;
-    padding-top: 350px;
+    padding-top: 50px;
     font-size: 1.2em;
 }
 
@@ -90,7 +143,7 @@ nav:nth-child(1) {
     height: 300px;
     width: 450px;
     margin: 0 auto;
-    padding-top: 350px;
+    padding-top: 260px;
     font-size: 1.2em;
 }
 
@@ -100,7 +153,7 @@ nav:nth-child(1) {
 
 .passForm label {
     display: inline-block;
-    width: 150px;
+    width: 160px;
     margin-right: 10px;
     text-align: right;
     font-size: 1.2em;
@@ -117,10 +170,10 @@ nav:nth-child(1) {
     margin: 0 auto;
     margin-top: 14px;
     font-size: 1.2em;
-    width: 100px;
-    background-color: #55acee;
-    border-radius: 2px;
-    border-color: #66acee;
+    width: 200px;
+    background-color: #3b0d66;
+    border-radius: 20px;
+    border-color: #6b379b;
     padding: 3px 0px;
     color: white;
     text-decoration: none;
@@ -132,7 +185,7 @@ nav:nth-child(1) {
 
 .formSubmit:hover {
     transition: background-color 0.4s ease;
-    background-color: #338acc;
+    background-color: #4f2576;
 }
 
 #user, #pass, #pass2 {
@@ -160,11 +213,116 @@ nav:nth-child(1) {
 #errorMessage {
     font-size: 1.2em;
     font-weight: bold;
-    color: red;
+    color: rgb(255, 204, 65);
     font-style: italic;
 }
 
 #pfp {
     width: 200px;
     height: 200px;
+}
+
+.column-flex {
+    display: flex;
+    width: 90vw;
+    margin-left: auto;
+    margin-top: 60px;
+    margin-right: auto;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.column {
+    width: 500px;
+}
+
+.account-overview {
+    background-color: #ffffff0f;
+    border-radius: 30px;
+    padding: 30px 0;
+}
+
+.row-flex {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.menuButton {
+    background-color: #3b0d66;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    border: none;
+    border-radius: 30px;
+    font-size: 2rem;
+    text-align: center;
+    margin: 20px auto;
+    transition: all 0.5s ease-out;
+    padding: 20px;
+}
+
+.menuButton:hover {
+    background-color: #6b379b;
+}
+
+.joining {
+    background-color: #ffffff0f;
+    border-radius: 30px;
+    width: 200px;
+    padding: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 260px;
+}
+
+.results {
+    margin-top: 100px;
+}
+
+.results h2 {
+    font-size: 2.5rem;
+    margin-bottom: 0;
+}
+
+.results div {
+    margin-top: 60px;
+}
+
+.results div h1 {
+    font-size: 2.5rem;
+    margin-top: 30px;
+}
+
+.results div h3 {
+    text-decoration: underline;
+    font-size: 1.7rem;
+    margin-bottom: 0;
+}
+
+.game {
+    margin-top: 200px;
+}
+
+p {
+    font-size: 1.5rem;
+}
+
+ol {
+    width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+li {
+    font-size: 1.6rem;
+    padding: 10px 0;
+}
+
+.light {
+    background-color: #ffffff0f;
+}
+
+.dark {
+    background-color: #0000000f;
 }

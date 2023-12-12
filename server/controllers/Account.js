@@ -81,7 +81,7 @@ const changePassword = async (req, res) => {
 };
 
 const addWinnings = async (req, res) => {
-  const winnings = `${req.body.winnings}`;
+  const winnings = Number(req.body.winnings);
 
   const doc = await Account.findOne({ username: req.session.account.username }).exec();
   doc.winnings += winnings;
@@ -94,7 +94,7 @@ const visibility = async (req, res) => {
   try {
     const doc = await Account.findOne({ username: req.session.account.username }).exec();
     if (!doc) {
-      throw new Error("account not found");
+      throw new Error('account not found');
     }
     doc.isVisible = !doc.isVisible;
     await doc.save();
@@ -102,11 +102,9 @@ const visibility = async (req, res) => {
     const responseObj = {
       username: doc.username,
       winnings: doc.winnings,
-      gamesPlayed: doc.gamesPlayed,
-      gamesWon: doc.gamesWon,
       isPremium: doc.isPremium,
-      isVisible: doc.isVisible
-    }
+      isVisible: doc.isVisible,
+    };
 
     return res.status(201).json(responseObj);
   } catch (err) {
@@ -119,23 +117,41 @@ const basicInfo = async (req, res) => {
   try {
     const doc = await Account.findOne({ username: req.session.account.username }).exec();
     if (!doc) {
-      throw new Error("account not found");
+      throw new Error('account not found');
     }
 
     const responseObj = {
       username: doc.username,
       winnings: doc.winnings,
-      gamesPlayed: doc.gamesPlayed,
-      gamesWon: doc.gamesWon,
       isPremium: doc.isPremium,
-      isVisible: doc.isVisible
-    }
+      isVisible: doc.isVisible,
+    };
 
     return res.json({ account: responseObj });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: 'Error retrieving account!' });
   }
+};
+
+// sorts the docs by score
+const compScore = (a, b) => b.winnings - a.winnings;
+
+const topTen = async (req, res) => {
+  // gets every account
+  let ten = await Account.find({ isVisible: true }).exec();
+
+  if (ten) {
+    ten = ten.sort(compScore).slice(0, 10);
+    // map the docs to objects we can respond with
+    const responseTen = ten.map((obj) => ({
+      username: obj.username,
+      winnings: obj.winnings,
+    }));
+
+    return res.status(200).json(responseTen);
+  }
+  return res.status(500).json({ error: 'no users found!' });
 };
 
 module.exports = {
@@ -147,5 +163,6 @@ module.exports = {
   changePassword,
   basicInfo,
   visibility,
-  addWinnings
+  addWinnings,
+  topTen,
 };

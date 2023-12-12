@@ -51,11 +51,13 @@ const LoginWindow = (props) => {
             method="POST"
             className="mainForm"
         >
+            <h2 id="errorMessage"></h2>
             <label htmlFor='username'>Username: </label>
             <input id='user' type='text' name='username' placeholder='username'/>
             <label htmlFor='pass'>Password: </label>
             <input id='pass' type='password' name='pass' placeholder='password' />
             <input className='formSubmit' type='submit' value='Sign in' />
+            <button id="switchToSignup">Don't have an account?</button>
         </form>
     );
 };
@@ -69,6 +71,7 @@ const SignupWindow = (props) => {
             method="POST"
             className="mainForm"
         >
+            <h2 id="errorMessage"></h2>
             <label htmlFor='username'>Username: </label>
             <input id='user' type='text' name='username' placeholder='username'/>
             <label htmlFor='pass'>Password: </label>
@@ -76,27 +79,29 @@ const SignupWindow = (props) => {
             <label htmlFor='pass2'>Password: </label>
             <input id='pass2' type='password' name='pass2' placeholder='retype password' />
             <input className='formSubmit' type='submit' value='Sign up' />
+            <button id="switchToLogin">Already have an account?</button>
         </form>
     );
 };
 
+const loginAction = (e) => {
+    e.preventDefault();
+    ReactDOM.render(<LoginWindow />, document.getElementById('content'));
+    document.getElementById('switchToSignup').addEventListener('click', signupAction);
+    return false;
+}
+
+const signupAction = (e) => {
+    e.preventDefault();
+    ReactDOM.render(<SignupWindow />, document.getElementById('content'));
+    document.getElementById('switchToLogin').addEventListener('click', loginAction);
+    return false;
+}
+
 const init = () => {
-    const loginButton = document.getElementById('loginButton');
-    const signupButton = document.getElementById('signupButton');
-
-    loginButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        ReactDOM.render(<LoginWindow />, document.getElementById('content'));
-        return false;
-    });
-
-    signupButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        ReactDOM.render(<SignupWindow />, document.getElementById('content'));
-        return false;
-    });
 
     ReactDOM.render(<LoginWindow />, document.getElementById('content'));
+    document.getElementById('switchToSignup').addEventListener('click', signupAction);
 };
 
 window.onload = init;

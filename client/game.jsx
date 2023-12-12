@@ -145,8 +145,9 @@ const NoWinner = (props) => {
     return (
         <div class="results">
             <h2>No Winner!</h2>
+            <div>
             <h3>Solution</h3>
-            <h1>"{props.puzzle}"</h1>
+            <h1>"{props.puzzle}"</h1></div>
             <a href="/landing"><button>Home</button></a>
         </div>
     );
@@ -157,8 +158,10 @@ const Winner = (props) => {
         <div class="results">
             <h2>{props.winner} Wins!</h2>
             <h3 class='points'>+{props.prize} points</h3>
+            <div>
             <h3>Solution</h3>
             <h1>"{props.puzzle}"</h1>
+            </div>
             <a href="/landing"><button>Home</button></a>
         </div>
     );
